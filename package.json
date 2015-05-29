@@ -14,6 +14,13 @@
     "storage",
     "redis"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vgno/ssehub-storage-redis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vgno/ssehub-storage-redis/issues"
+  },
   "author": "Espen Hovlandsdal <espen@hovlandsdal.com>",
   "license": "MIT",
   "dependencies": {
