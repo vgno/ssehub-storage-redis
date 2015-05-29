@@ -5,3 +5,10 @@ node_js:
   - iojs
 services:
   - redis-server
+script:
+  - npm run coverage
+after_script:
+  - npm install codeclimate-test-reporter && cat coverage/lcov.info | codeclimate
+env:
+  global:
+    - secure: DWELNPL4GQp8dpp4eZFyNZ6QzeSQ8r3y9TGZsYEM6lx4gxjz/Xpy8GCoyJcO9/6V+OHxeeqJ9hsnmwRwU30aQL+CynCP+CcMCMXv2Wv9/XkP19rEwKdj10DabwH30MJALdLvyhNTlw1GDR0I5xGP8rf4T6hASxnTSnnhRTXatcyNt4wvwFF5QUimqQtpA0NK3Ph3ejPcKUwvnwopCobKqzbmYxYp6yqz96LM9SY1ktAQb2NZqpmovCjT1TIZbeU4aRhSxiDPBdTSybYaXACsxM1DNv3LgyXAPmbru5sFNG/KDe2N3A72VQGbl3X+UT00ugiHnh6b01i3YaNm41PzliR9b9veHv/bLBZBnovPEx3+lUA+WTsWjvUo7eJj7TVTOc9hFKdeGKRghns4Glb5pjbtBV+SCByUTMoVmYyBkgy9VHYpUykV/HErxqonfzOQuS27Z01A2iRHMnbAlt7c4I68lwhRHLzmBEXLJ1UXC4s/UMrk8pnv7XLTuttMHrNsFP8aec8FHeQ733mnNpfrscw+coS+9ktsPzn9eHWS3cHDpkAjp7DC+xPekByIWBDC4gBhof244+7LHt9LFA+JX93w6SK5ozZP6k8FrxgGtOPYdavd+l1dIf+OhewHgFVCr7j7WaEOEAyviCx5IIGHg7QS611K1hiP3EbelJK3J4E=
