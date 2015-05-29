@@ -4,7 +4,9 @@
   "description": "Redis storage adapter for SSE Hub",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
     "test": "mocha",
+    "pretest": "npm run lint",
     "coverage": "istanbul cover ./node_modules/.bin/_mocha"
   },
   "keywords": [

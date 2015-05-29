@@ -13,17 +13,17 @@ util.inherits(RedisStorage, events.EventEmitter);
 RedisStorage.prototype.connect = function(callback) {
     if (!this.client) {
         this.client = redis.createClient(
-            this.config.redisPort,
-            this.config.redisHost,
-            this.config.redisOptions
+            this.config.port,
+            this.config.host,
+            this.config.options
         );
 
         this.client.on('error', function(e) {
             this.emit('error', e);
         }.bind(this));
 
-        if (this.config.redisDbNum !== 0) {
-            this.client.select(this.config.redisDbNum, callback);
+        if (this.config.dbNumber !== 0) {
+            this.client.select(this.config.dbNumber, callback);
             return this.client;
         }
     }
@@ -35,12 +35,10 @@ RedisStorage.prototype.connect = function(callback) {
     return this.client;
 };
 
-RedisStorage.prototype.storeMessage = function(path, msg, callback) {
+RedisStorage.prototype.storeMessage = function(path, msg, maxItems, callback) {
     if (!this.client) {
         this.connect();
     }
-
-    var maxItems = this.config.maxHistoryItems || 500;
 
     // Push the message onto the list
     this.client.lpush(path, JSON.stringify(msg), function(err, length) {

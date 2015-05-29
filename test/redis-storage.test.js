@@ -7,9 +7,9 @@ var RedisStorage = require('../');
 var redis = require('redis');
 
 var config = {
-    redisPort: process.env.REDIS_PORT || 6379,
-    redisHost: process.env.REDIS_HOST || 'localhost',
-    redisDbNum: 15
+    port: process.env.REDIS_PORT || 6379,
+    host: process.env.REDIS_HOST || 'localhost',
+    dbNumber: 15
 };
 
 describe('redis storage', function() {
@@ -21,11 +21,11 @@ describe('redis storage', function() {
 
     afterEach(function(done) {
         var client = redis.createClient(
-            config.redisPort,
-            config.redisHost
+            config.port,
+            config.host
         );
 
-        client.select(config.redisDbNum, function() {
+        client.select(config.dbNumber, function() {
             client.flushdb();
             done();
         });
@@ -60,13 +60,13 @@ describe('redis storage', function() {
     });
 
     it('doesnt select a database if db 0 is specified', function(done) {
-        var store = new RedisStorage(merge({}, config, { redisDbNum: 0 }));
+        var store = new RedisStorage(merge({}, config, { dbNumber: 0 }));
         store.connect(done);
     });
 
     it('can set and get messages', function(done) {
         var path = '/some/path';
-        storage.storeMessage(path, { data: 'foobar' }, function(err) {
+        storage.storeMessage(path, { data: 'foobar' }, 500, function(err) {
             failOnError(err);
 
             storage.getMessages(path, null, function(getErr, msgs) {
@@ -81,7 +81,7 @@ describe('redis storage', function() {
     it('doesnt blow up if storeMessage is called after explicitly connecting', function(done) {
         var path = '/some/path';
         storage.connect();
-        storage.storeMessage(path, { data: 'foobar' }, function(err) {
+        storage.storeMessage(path, { data: 'foobar' }, 500, function(err) {
             failOnError(err);
             done();
         });
@@ -100,7 +100,7 @@ describe('redis storage', function() {
         var path = '/some/path', id = 0;
 
         while (++id < 50) {
-            storage.storeMessage(path, { id: id, data: 'Message #' + id }, failOnError);
+            storage.storeMessage(path, { id: id, data: 'Message #' + id }, 500, failOnError);
         }
 
         storage.getMessages(path, 40, function(err, messages) {
@@ -124,11 +124,10 @@ describe('redis storage', function() {
     });
 
     it('caps at the maximum given history length', function(done) {
-        var store = new RedisStorage(merge({}, config, { maxHistoryItems: 5 }));
         var path = '/some/path', id = 0;
 
         var checkMsgs = runAfter(50, function() {
-            store.getMessages(path, function(err, messages) {
+            storage.getMessages(path, function(err, messages) {
                 failOnError(err);
                 expect(messages).length.to.be(5);
                 done();
@@ -136,7 +135,7 @@ describe('redis storage', function() {
         });
 
         while (++id <= 50) {
-            store.storeMessage(path, { id: id, data: 'Message #' + id }, checkMsgs);
+            storage.storeMessage(path, { id: id, data: 'Message #' + id }, 5, checkMsgs);
         }
     });
 });
