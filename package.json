@@ -1,0 +1,29 @@
+{
+  "name": "ssehub-storage-redis",
+  "version": "1.0.0",
+  "description": "Redis storage adapter for SSE Hub",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha",
+    "coverage": "istanbul cover ./node_modules/.bin/_mocha"
+  },
+  "keywords": [
+    "ssehub",
+    "storage",
+    "redis"
+  ],
+  "author": "Espen Hovlandsdal <espen@hovlandsdal.com>",
+  "license": "MIT",
+  "dependencies": {
+    "redis": "^0.12.1"
+  },
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "eslint": "^0.21.2",
+    "istanbul": "^0.3.14",
+    "lodash.after": "^3.0.1",
+    "lodash.merge": "^3.3.1",
+    "mocha": "^2.2.5",
+    "vgno-coding-standards": "^1.0.6"
+  }
+}
