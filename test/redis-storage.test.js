@@ -138,6 +138,22 @@ describe('redis storage', function() {
             storage.storeMessage(path, { id: id, data: 'Message #' + id }, { maxItems: 5 }, checkMsgs);
         }
     });
+
+    it('can be told to disconnect and calls callback when done', function(done) {
+        storage.disconnect(function(err) {
+            failOnError(err);
+            done();
+        });
+    });
+
+    it('can disconnect after interacting with database', function(done) {
+        storage.getMessages('/some/other/path', 500, function() {
+            storage.disconnect(function(err) {
+                failOnError(err);
+                done();
+            });
+        });
+    });
 });
 
 function failOnError(err) {

@@ -71,4 +71,8 @@ RedisStorage.prototype.getMessages = function(path, limit, callback) {
     });
 };
 
+RedisStorage.prototype.disconnect = function(callback) {
+    process.nextTick(callback);
+};
+
 module.exports = RedisStorage;
