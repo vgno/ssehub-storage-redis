@@ -57,26 +57,17 @@ RedisStorage.prototype.storeMessage = function(path, msg, options, callback) {
     });
 };
 
-RedisStorage.prototype.getMessages = function(path, since, callback) {
+RedisStorage.prototype.getMessages = function(path, limit, callback) {
     if (!this.client) {
         this.connect();
     }
 
-    if (typeof since === 'function' && !callback) {
-        callback = since;
-        since = null;
-    }
-
-    this.client.lrange(path, 0, -1, function(err, items) {
+    this.client.lrange(path, 0, limit - 1, function(err, items) {
         if (err) {
             return callback(err);
         }
 
-        items = items.map(JSON.parse);
-
-        callback(null, since ? items.filter(function(item) {
-            return item.id > since;
-        }) : items);
+        callback(null, items.map(JSON.parse));
     });
 };
 

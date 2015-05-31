@@ -32,7 +32,7 @@ describe('redis storage', function() {
     });
 
     it('implicitly connects', function(done) {
-        storage.getMessages('/some/path', function(err) {
+        storage.getMessages('/some/path', 500, function(err) {
             failOnError(err);
             done();
         });
@@ -40,7 +40,7 @@ describe('redis storage', function() {
 
     it('can explicitly be told to connect', function(done) {
         storage.connect();
-        storage.getMessages('/some/path', function(err) {
+        storage.getMessages('/some/path', 500, function(err) {
             failOnError(err);
             done();
         });
@@ -69,7 +69,7 @@ describe('redis storage', function() {
         storage.storeMessage(path, { data: 'foobar' }, {}, function(err) {
             failOnError(err);
 
-            storage.getMessages(path, null, function(getErr, msgs) {
+            storage.getMessages(path, 500, function(getErr, msgs) {
                 failOnError(getErr);
                 expect(msgs).to.have.length(1);
                 expect(msgs[0].data).to.equal('foobar');
@@ -90,20 +90,20 @@ describe('redis storage', function() {
     it('doesnt blow up if getMessages is called after explicitly connecting', function(done) {
         var path = '/some/path';
         storage.connect();
-        storage.getMessages(path, function(err) {
+        storage.getMessages(path, 500, function(err) {
             failOnError(err);
             done();
         });
     });
 
-    it('can filter messages since a given ID', function(done) {
+    it('can fetch with limit', function(done) {
         var path = '/some/path', id = 0;
 
         while (++id < 50) {
-            storage.storeMessage(path, { id: id, data: 'Message #' + id }, 500, failOnError);
+            storage.storeMessage(path, { id: id, data: 'Message #' + id }, { maxItems: 500 }, failOnError);
         }
 
-        storage.getMessages(path, 40, function(err, messages) {
+        storage.getMessages(path, 9, function(err, messages) {
             failOnError(err);
             expect(messages).to.have.length(9);
             expect(messages[0].data).to.equal('Message #49');
@@ -127,7 +127,7 @@ describe('redis storage', function() {
         var path = '/some/path', id = 0;
 
         var checkMsgs = runAfter(50, function() {
-            storage.getMessages(path, function(err, messages) {
+            storage.getMessages(path, 500, function(err, messages) {
                 failOnError(err);
                 expect(messages).length.to.be(5);
                 done();
