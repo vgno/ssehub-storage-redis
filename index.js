@@ -35,24 +35,26 @@ RedisStorage.prototype.connect = function(callback) {
     return this.client;
 };
 
-RedisStorage.prototype.storeMessage = function(path, msg, maxItems, callback) {
+RedisStorage.prototype.storeMessage = function(path, msg, options, callback) {
     if (!this.client) {
         this.connect();
     }
 
+    var db = this.client;
+
     // Push the message onto the list
-    this.client.lpush(path, JSON.stringify(msg), function(err, length) {
+    db.lpush(path, JSON.stringify(msg), function(err, length) {
         if (err) {
             return callback(err);
         }
 
         // If we have more items than allowed, pop the oldest one of the list
-        if (length > maxItems) {
-            this.client.rpop(path, callback);
+        if (options.maxItems && length > options.maxItems) {
+            db.rpop(path, callback);
         } else {
             callback();
         }
-    }.bind(this));
+    });
 };
 
 RedisStorage.prototype.getMessages = function(path, since, callback) {

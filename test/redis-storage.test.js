@@ -66,7 +66,7 @@ describe('redis storage', function() {
 
     it('can set and get messages', function(done) {
         var path = '/some/path';
-        storage.storeMessage(path, { data: 'foobar' }, 500, function(err) {
+        storage.storeMessage(path, { data: 'foobar' }, {}, function(err) {
             failOnError(err);
 
             storage.getMessages(path, null, function(getErr, msgs) {
@@ -81,7 +81,7 @@ describe('redis storage', function() {
     it('doesnt blow up if storeMessage is called after explicitly connecting', function(done) {
         var path = '/some/path';
         storage.connect();
-        storage.storeMessage(path, { data: 'foobar' }, 500, function(err) {
+        storage.storeMessage(path, { data: 'foobar' }, {}, function(err) {
             failOnError(err);
             done();
         });
@@ -135,7 +135,7 @@ describe('redis storage', function() {
         });
 
         while (++id <= 50) {
-            storage.storeMessage(path, { id: id, data: 'Message #' + id }, 5, checkMsgs);
+            storage.storeMessage(path, { id: id, data: 'Message #' + id }, { maxItems: 5 }, checkMsgs);
         }
     });
 });
